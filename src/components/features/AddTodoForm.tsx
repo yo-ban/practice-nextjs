@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ErrorMessage from '@/components/ui/ErrorMessage';
 import Button from '@/components/ui/Button';
 import InputField from '@/components/ui/InputField';
+import { motion } from 'framer-motion'; // framer-motionをインポート
 
 // AddTodoForm の props の型定義
 interface AddTodoFormProps {
@@ -45,8 +46,15 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAdd }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mb-4">
-            <div className="flex flex-col">
+        // アニメーション付きのフォームコンテナを追加
+        <motion.form 
+            onSubmit={handleSubmit} 
+            className="mb-6 p-4 bg-gray-100 rounded-lg shadow-sm"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+        >
+            <div className="flex flex-col space-y-2"> {/* 縦方向のスペースを追加 */}
                 {/* Todo タイトル入力フィールド */}
                 <InputField
                     value={title}
@@ -55,7 +63,7 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAdd }) => {
                         setError(''); // 入力時にエラーメッセージをクリア
                     }}
                     placeholder="新しい ToDo を入力"
-                    className="flex-grow border border-gray-300 rounded px-4 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {/* エラーメッセージ表示 */}
                 {error && <ErrorMessage message={error} />}
@@ -63,12 +71,12 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ onAdd }) => {
                 <Button
                     type="submit"
                     variant="primary"
-                    className="mt-2"
+                    className="w-full"
                 >
                     追加
                 </Button>
             </div>
-        </form>
+        </motion.form>
     );
 };
 

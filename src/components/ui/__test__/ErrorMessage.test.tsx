@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ErrorMessage from '@/components/ui/ErrorMessage';
-import '@testing-library/jest-dom';
+import { expect } from '@jest/globals';
 
 describe('ErrorMessageコンポーネント', () => {
     test('エラーメッセージが正しく表示される', () => {

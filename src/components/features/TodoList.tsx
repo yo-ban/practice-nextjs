@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 import TodoItem from '@/components/features/TodoItem';
 import AddTodoForm from '@/components/features/AddTodoForm';
@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Image from 'next/image';
 import Link from "next/link";
 import dynamic from 'next/dynamic';
+import { motion } from "framer-motion";
 
 // Todoの型定義
 interface Todo {
@@ -19,12 +20,18 @@ interface Todo {
 
 // TodoStatsコンポーネントを動的にインポート
 const DynamicTodoStats = dynamic(() => import('@/components/features/TodoStats'), {
-    loading: () => <p>統計情報を読み込み中...</p>,
+    loading: () => <p className="text-gray-500 italic">統計情報を読み込み中...</p>,
     ssr: false // サーバーサイドレンダリングを無効化
 });
 
 // データをフェッチする関数
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error('APIリクエストに失敗しました');
+    }
+    return res.json();
+};
 
 const TodoList: React.FC = () => {
 
@@ -34,11 +41,11 @@ const TodoList: React.FC = () => {
     // 統計情報を表示するかどうかを管理
     const [showStats, setShowStats] = useState(false);
 
+    // エラーがある場合の表示
+    if (error) return <ErrorMessage message="Todoの取得中にエラーが発生しました" />;
+
     // ローディング中の表示
     if (!todos) return <div>Loading...</div>;
-
-    // エラーがある場合の表示
-    if (error) return <ErrorMessage message={error.message} />;
 
     // 新しいTodoを追加する関数
     const addTodo = async (title: string) => {
@@ -99,49 +106,74 @@ const TodoList: React.FC = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8">
-            <div className="flex items-center justify-center mb-4">
-                <div className="flex items-center">
-                <Image
-                    src="/todo-icon.png"
-                    alt="Todo Icon"
-                    width={50}
-                    height={50}
-                    priority
-                />
-                <h1 className="text-2xl font-bold mb-4">Todoリスト</h1>
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg"
+        >
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                    <Image
+                        src="/todo-icon.png"
+                        alt="Todo Icon"
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                        priority
+                    />
+                    <h1 className="text-3xl font-bold text-gray-800">Todoリスト</h1>
                 </div>
-                <Link href="/about" className="text-blue-500 hover:text-blue-700">
+                <Link href="/about" className="text-blue-600 hover:text-blue-800 transition duration-300">
                     About
                 </Link>
             </div>
             {/* Todoリスト */}
             <AddTodoForm onAdd={addTodo} />
             {/* todos配列をマップしてTodoItemコンポーネントをレンダリング */}
-            {todos.map((todo) => (
-                <TodoItem
-                    key={todo.id} // Reactのリスト・レンダリングには一意のkey propが必要
-                    id={todo.id}
-                    title={todo.title}
-                    completed={todo.completed}
-                    onToggle={toggleTodo} // 完了状態切り替え関数を渡す
-                    onDelete={deleteTodo} // 削除関数を渡す
-                />
-            ))}
+            <motion.ul className="space-y-3 mt-6">
+                {todos.map((todo) => (
+                    <motion.li
+                        key={todo.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <TodoItem
+                            key={todo.id} // Reactのリスト・レンダリングには一意のkey propが必要
+                            id={todo.id}
+                            title={todo.title}
+                            completed={todo.completed}
+                            onToggle={toggleTodo} // 完了状態切り替え関数を渡す
+                            onDelete={deleteTodo} // 削除関数を渡す
+                        />
+                    </motion.li>
+                ))}
+            </motion.ul>
             {/* 統計情報を表示するボタン */}
-            <Button 
+            <Button
                 onClick={() => setShowStats(!showStats)}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                variant="primary"
+                className="mt-6 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
             >
                 {showStats ? '統計情報を隠す' : '統計情報を表示'}
             </Button>
+
             {showStats && (
-                <DynamicTodoStats 
-                    totalTodos={todos.length} 
-                    completedTodos={todos.filter(todo => todo.completed).length} 
-                />
+                <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    <DynamicTodoStats
+                        totalTodos={todos.length}
+                        completedTodos={todos.filter(todo => todo.completed).length}
+                    />
+                </motion.div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

@@ -20,9 +20,13 @@ const Checkbox: React.FC<CheckboxProps> = ({ checked, onChange, label }) => {
                 type="checkbox"
                 checked={checked}
                 onChange={handleChange}
-                className="form-checkbox h-5 w-5 text-blue-600"
+                className="
+                    form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out
+                    border border-gray-300 rounded
+                    focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+                "
             />
-            {label && <span>{label}</span>}
+            {label && <span className="text-gray-700">{label}</span>}
         </label>
     );
 };

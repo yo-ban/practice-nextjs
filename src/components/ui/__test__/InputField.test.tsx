@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import InputField from '@/components/ui/InputField';
-import '@testing-library/jest-dom';
+import { expect } from '@jest/globals';
 
 describe('InputField コンポーネント', () => {
     const mockOnChange = jest.fn();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Checkbox from '@/components/ui/Checkbox';
-import '@testing-library/jest-dom';
+import { expect } from '@jest/globals';
 
 describe('Checkboxコンポーネント', () => {
     const mockOnChange = jest.fn();
