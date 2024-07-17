@@ -11,7 +11,8 @@
     "test:verbose": "jest --config jest.config.js --verbose",
     "test:coverage": "jest --config jest.config.js --coverage",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@prisma/client": "^5.17.0",

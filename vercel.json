@@ -1,0 +1,10 @@
+{
+    "builds": [
+        {
+            "src": "package.json",
+            "use": "@vercel/next"
+        }
+    ],
+    "buildCommand": "prisma generate && prisma migrate deploy && next build",
+    "devCommand": "prisma generate && prisma migrate deploy && next dev"
+}
