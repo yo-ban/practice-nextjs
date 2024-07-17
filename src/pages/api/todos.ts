@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // エラーログをコンソールに出力
                 console.error('Error fetching todos:', error);
                 // エラーレスポンスを返す
-                res.status(500).json({ error: 'Internal Server Error' });
+                res.status(500).json({ error: 'Failed to fetch todos' })
             }
             break;
 
@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 res.status(201).json(newTodo);
             } catch (error) {
                 console.error('Error creating todo:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
+                res.status(500).json({ error: 'Failed to create todo' });
             }
             break;
 
